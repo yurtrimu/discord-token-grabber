@@ -50,14 +50,23 @@ namespace fileio {
 
     bool read_utf8_file(const std::string &filename, std::string &out) {
         std::ifstream file(filename, std::ios::in | std::ios::binary);
-        if (file.is_open()) {
-            out = std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-            file.close();
-            return true;
-        }
-        else {
+        if (!file) {
             return false;
         }
+
+        const size_t bufferSize = 4096;
+        std::vector<char> buffer(bufferSize);
+        std::string temp;
+
+        while (file.read(buffer.data(), buffer.size())) {
+            temp.append(buffer.data(), buffer.size());
+        }
+
+        temp.append(buffer.data(), file.gcount()); 
+        out = temp; 
+
+        file.close();
+        return true;
     }
 
     bool write_file(const std::string &filename, const std::string &content) {
