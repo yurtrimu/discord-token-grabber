@@ -88,10 +88,10 @@ public:
 
             std::vector<std::thread> thread_list;
 
-            for (std::string &content : contents) {
-                thread_list.emplace_back([&]() {
-                    for (std::regex r : regex_list) {
-
+            for (const std::string &content : contents) {
+                thread_list.emplace_back([content, &regex_list, &encrypted_token_list, &mtx]() {
+                    for (const std::regex &r : regex_list) {
+                        
                         std::sregex_iterator begin(content.begin(), content.end(), r);
                         std::sregex_iterator end;
 
