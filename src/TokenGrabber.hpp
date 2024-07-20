@@ -58,9 +58,9 @@ public:
             std::vector<std::string> encrypted_token_list;
 
             std::vector<std::regex> regex_list;
-            regex_list.emplace_back(R"(dQw4w9WgXcQ:[^\"\[\]\(\)]*)");
-            regex_list.emplace_back(R"(dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*)");
-            regex_list.emplace_back("dQw4w9WgXcQ:(.*?)=");
+            regex_list.emplace_back(R"(dQw4w9WgXcQ:[^\"\[\]\(\)]*)", std::regex::optimize);
+            regex_list.emplace_back(R"(dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*)", std::regex::optimize);
+            regex_list.emplace_back("dQw4w9WgXcQ:(.*?)=", std::regex::optimize);
 
             // Cant write the regex as one part because windows defender gives a virus flag because that this is a JWT pattern
             std::string regex_part_1 = R"([\w-]{24}\.[\)";
