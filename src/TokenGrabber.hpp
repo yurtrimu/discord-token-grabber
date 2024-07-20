@@ -116,7 +116,7 @@ public:
 
             for (const std::string &raw_token : encrypted_token_list) {
 
-                if (!(raw_token.find("dQw4w9WgXcQ") != std::string::npos)) {
+                if (raw_token.find("dQw4w9WgXcQ") == std::string::npos) {
                     result.push_back("UNDECRYPTED_TOKEN{" + raw_token + "}");
                     continue;
                 }
