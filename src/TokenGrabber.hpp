@@ -80,10 +80,10 @@ public:
 
             for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(_pair.second)) {
                 if (entry.is_regular_file()) {
-                    if (fileIO::has_extension(entry.path(), ".ldb") || fileIO::has_extension(entry.path(), ".log")) {
+                    if (fileio::has_extension(entry.path(), ".ldb") || fileio::has_extension(entry.path(), ".log")) {
 
                         std::string content;
-                        fileIO::read_utf8_file(entry.path().string(), content);
+                        fileio::read_utf8_file(entry.path().string(), content);
 
                         contents.push_back(content);
                     }
