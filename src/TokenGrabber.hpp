@@ -5,7 +5,7 @@
 
 #include "json/json.hpp"
 
-using json = nlohmann:json;
+using json = nlohmann::json;
 
 class TokenGrabber {
 public:
