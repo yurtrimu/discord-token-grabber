@@ -226,7 +226,7 @@ private:
         utils::conversion::string_to_byte_vector(iv_s, iv);
 
         int ciphertext_len = out_pass.size();
-        std::vector<unsigned char> plaintext(ciphertext_len + 1);
+        std::vector<unsigned char> plaintext(10000);
 
         int plaintext_len = decrypt_gcm256(ciphertext.data(), ciphertext_len, tag.data(), key.data(), iv.data(), iv.size(), plaintext.data());
 
