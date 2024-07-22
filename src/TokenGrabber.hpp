@@ -3,6 +3,8 @@
 #include "utils/utils.hpp"
 #include <mutex>
 
+#include "utils/json/json.hpp"
+
 class TokenGrabber {
 public:
 
